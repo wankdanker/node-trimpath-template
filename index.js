@@ -48,16 +48,6 @@ TrimPath.parseTemplate = function(tmplContent, optTmplName, optEtc) {
     return null;
 }
 
-try {
-    String.prototype.process = function(context, optFlags) {
-        var template = TrimPath.parseTemplate(this, null);
-        if (template != null)
-            return template.process(context, optFlags);
-        return this;
-    }
-} catch (e) { // Swallow exception, such as when String.prototype is sealed.
-}
-
 TrimPath.parseTemplate_etc = {};            // Exposed for extensibility.
 TrimPath.parseTemplate_etc.statementTag = "forelse|for|if|elseif|else|var|macro";
 TrimPath.parseTemplate_etc.statementDef = { // Lookup table for statement tags.
