@@ -1,0 +1,24 @@
+{
+  "name": "trimpath-template",
+  "version": "1.0.38",
+  "description": "trimpath-template template language",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wankdanker/node-trimpath-template.git"
+  },
+  "keywords": [
+    "template",
+    "language",
+    "trimpath"
+  ],
+  "author": "",
+  "license": "GPL, Apache 2.0",
+  "bugs": {
+    "url": "https://github.com/wankdanker/node-trimpath-template/issues"
+  },
+  "homepage": "https://github.com/wankdanker/node-trimpath-template"
+}
