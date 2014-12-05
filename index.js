@@ -30,13 +30,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var TrimPath = module.exports = {};
 
 // TODO: Debugging mode vs stop-on-error mode - runtime flag.
 // TODO: Handle || (or) characters and backslashes.
 // TODO: Add more modifiers.
 
+module.exports.filters = {};
+
+var compile = module.exports.compile = function (str, options) {
+    var t = TrimPath.parseTemplate(str, options);
+    
+    return function (context) {
+        context = context || {};
+        
+        //TODO: should they be merged if they both exist?
+        context._MODIFIERS = context._MODIFIERS || module.exports.filters;
+        
+        return t.process(context);
+    }
+};
+
+var render = module.exports.render = function (str, context) {
+    return compile(str)(context);
+};
+
+var TrimPath = module.exports.TrimPath = {};
 var UNDEFINED;
+
+TrimPath.evalEx = function(src) { return eval(src); };
 
 TrimPath.parseTemplate = function(tmplContent, optTmplName, optEtc) {
     if (optEtc == null)
