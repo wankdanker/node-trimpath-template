@@ -43,16 +43,6 @@ var TrimPath;
         TrimPath.evalEx = function(src) { return eval(src); };
 
     var UNDEFINED;
-    if (Array.prototype.pop == null)  // IE 5.x fix from Igor Poteryaev.
-        Array.prototype.pop = function() {
-            if (this.length === 0) {return UNDEFINED;}
-            return this[--this.length];
-        };
-    if (Array.prototype.push == null) // IE 5.x fix from Igor Poteryaev.
-        Array.prototype.push = function() {
-            for (var i = 0; i < arguments.length; ++i) {this[this.length] = arguments[i];}
-            return this.length;
-        };
 
     TrimPath.parseTemplate = function(tmplContent, optTmplName, optEtc) {
         if (optEtc == null)
@@ -395,3 +385,5 @@ var TrimPath;
         return TrimPath.parseDOMTemplate(elementId, optDocument, optEtc).process(context, optFlags);
     }
 }) ();
+
+module.exports = TrimPath;
