@@ -30,17 +30,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var TrimPath;
+var TrimPath = module.exports = {};
 
 // TODO: Debugging mode vs stop-on-error mode - runtime flag.
 // TODO: Handle || (or) characters and backslashes.
 // TODO: Add more modifiers.
-
-
-if (TrimPath == null)
-    TrimPath = new Object();
-if (TrimPath.evalEx == null)
-    TrimPath.evalEx = function(src) { return eval(src); };
 
 var UNDEFINED;
 
@@ -384,5 +378,3 @@ TrimPath.parseDOMTemplate = function(elementId, optDocument, optEtc) {
 TrimPath.processDOMTemplate = function(elementId, context, optFlags, optDocument, optEtc) {
     return TrimPath.parseDOMTemplate(elementId, optDocument, optEtc).process(context, optFlags);
 }
-
-module.exports = TrimPath;
