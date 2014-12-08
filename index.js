@@ -41,12 +41,24 @@ var compile = module.exports.compile = function (str, options) {
     var t = TrimPath.parseTemplate(str, options);
     
     return function (context) {
+        var deleteModifiers;
+
         context = context || {};
         
+        if (!context._MODIFIERS) {
+            deleteModifiers = true;
+        }
+
         //TODO: should they be merged if they both exist?
         context._MODIFIERS = context._MODIFIERS || module.exports.filters;
         
-        return t.process(context);
+        var result = t.process(context, { throwExceptions : true });
+
+        if (deleteModifiers) {
+            delete context._MODIFIERS;
+        }
+
+        return result;
     }
 };
 
@@ -136,7 +148,7 @@ TrimPath.parseTemplate_etc.Template = function(tmplName, tmplContent, funcSrc, f
         } catch (e) {
             if (flags.throwExceptions == true)
                 throw e;
-            var result = new String(resultArr.join("") + "[ERROR: " + e.toString() + (e.message ? '; ' + e.message : '') + "]");
+            var result = resultArr.join("") + "[ERROR: " + e.toString() + (e.message ? '; ' + e.message : '') + "]";
             result["exception"] = e;
             return result;
         }
