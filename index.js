@@ -35,6 +35,8 @@
 // TODO: Handle || (or) characters and backslashes.
 // TODO: Add more modifiers.
 
+var fs = require('fs');
+
 module.exports.filters = {};
 
 var compile = module.exports.compile = function (str, options) {
@@ -69,11 +71,30 @@ var render = module.exports.render = function (str, context) {
 var TrimPath = module.exports.TrimPath = {};
 var UNDEFINED;
 
+TrimPath.processIncludes = function (tmplContent) {
+    var reg = /\{include ([^\}]*)\}/gi;
+    var path;
+    var tmp;
+
+    while (path = reg.exec(tmplContent)) {
+        tmp = fs.readFileSync(path[1], 'utf8');
+        
+        tmp = TrimPath.processIncludes(tmp);
+
+        tmplContent = tmplContent.replace(path[0], tmp);
+    }
+
+    return tmplContent;
+}
+
 TrimPath.evalEx = function(src) { return eval(src); };
 
 TrimPath.parseTemplate = function(tmplContent, optTmplName, optEtc) {
     if (optEtc == null)
         optEtc = TrimPath.parseTemplate_etc;
+
+    tmplContent = TrimPath.processIncludes(tmplContent);
+
     var funcSrc = parse(tmplContent, optTmplName, optEtc);
     var func = TrimPath.evalEx(funcSrc, optTmplName, 1);
     if (func != null)

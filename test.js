@@ -29,3 +29,10 @@ test('test filters/modifiers', function (t) {
 	t.equal(str2, 'no');
 	t.end();
 });
+
+test('test include files', function (t) {
+	var str1 = tpl.render('before {include test-include1.html} after', { name : 'steve' });
+
+	t.equal(str1, 'before steve after');
+	t.end();
+});
