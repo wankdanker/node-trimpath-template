@@ -36,10 +36,18 @@
 // TODO: Add more modifiers.
 
 var fs = require('fs');
+var join = require('path').join;
+var dirname = require('path').dirname;
 
 module.exports.filters = {};
 
 var compile = module.exports.compile = function (str, options) {
+    if (options.filename) {
+        options.root = (options.filename)
+            ? dirname(options.filename)
+            : process.cwd();
+    }
+
     var t = TrimPath.parseTemplate(str, options);
     
     return function (context) {
@@ -71,13 +79,13 @@ var render = module.exports.render = function (str, context) {
 var TrimPath = module.exports.TrimPath = {};
 var UNDEFINED;
 
-TrimPath.processIncludes = function (tmplContent) {
+TrimPath.processIncludes = function (tmplContent, options) {
     var reg = /\{include ([^\}]*)\}/gi;
     var path;
     var tmp;
 
     while (path = reg.exec(tmplContent)) {
-        tmp = fs.readFileSync(path[1], 'utf8');
+        tmp = fs.readFileSync(join(options.root, path[1]), 'utf8');
         
         tmp = TrimPath.processIncludes(tmp);
 
@@ -93,7 +101,7 @@ TrimPath.parseTemplate = function(tmplContent, optTmplName, optEtc) {
     if (optEtc == null)
         optEtc = TrimPath.parseTemplate_etc;
 
-    tmplContent = TrimPath.processIncludes(tmplContent);
+    tmplContent = TrimPath.processIncludes(tmplContent, optTmplName);
 
     var funcSrc = parse(tmplContent, optTmplName, optEtc);
     var func = TrimPath.evalEx(funcSrc, optTmplName, 1);
