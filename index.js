@@ -85,7 +85,18 @@ TrimPath.processIncludes = function (tmplContent, options) {
     var tmp;
 
     while (path = reg.exec(tmplContent)) {
-        tmp = fs.readFileSync(join(options.root, path[1]), 'utf8');
+        try {
+            tmp = fs.readFileSync(join(options.root, path[1]), 'utf8');
+        }
+        catch (e) {
+            if (e.code === 'ENOENT') {
+                //rethrow the error with out this error code
+                delete e.code;
+		e.message = 'Include file not found \'' + join(options.root, path[1]) + '\'';
+            }
+
+            throw e;
+        }
         
         tmp = TrimPath.processIncludes(tmp);
 
