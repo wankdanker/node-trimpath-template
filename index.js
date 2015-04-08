@@ -92,13 +92,15 @@ TrimPath.processIncludes = function (tmplContent, options) {
             if (e.code === 'ENOENT') {
                 //rethrow the error with out this error code
                 delete e.code;
-		e.message = 'Include file not found \'' + join(options.root, path[1]) + '\'';
+                e.message = 'Include file not found \'' + join(options.root, path[1]) + '\'';
             }
 
             throw e;
         }
         
-        tmp = TrimPath.processIncludes(tmp);
+        tmp = TrimPath.processIncludes(tmp, {
+            root : join(options.root, dirname(path[1]))
+        });
 
         tmplContent = tmplContent.replace(path[0], tmp);
     }
