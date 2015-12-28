@@ -40,6 +40,8 @@ var join = require('path').join;
 var dirname = require('path').dirname;
 
 module.exports.filters = {};
+module.exports.collapseWhitespace = false;
+module.exports.collapseWhitespaceReg = /[\t\n\ ]{2,}(?![^<>]*<\/pre>)/gi;
 
 var compile = module.exports.compile = function (str, options) {
     if (options.filename) {
@@ -321,8 +323,9 @@ var emitSectionText = function(text, funcText) {
 
     for (var i = 0; i < lines.length; i++) {
         emitSectionTextLine(lines[i], funcText);
-        if (i < lines.length - 1)
+        if (!module.exports.collapseWhitespace && i < lines.length - 1) {
             funcText.push('_OUT.write("\\n");\n');
+        }
     }
 }
 
@@ -364,6 +367,11 @@ var emitText = function(text, funcText) {
     text = text.replace(/\\/g, '\\\\');
     text = text.replace(/\n/g, '\\n');
     text = text.replace(/"/g,  '\\"');
+    
+    if (module.exports.collapseWhitespace) {
+        text = text.replace(module.exports.collapseWhitespaceReg, '');
+    }
+    
     funcText.push('_OUT.write("');
     funcText.push(text);
     funcText.push('");');
@@ -393,6 +401,7 @@ var cleanWhiteSpace = function(result) {
     result = result.replace(/\r\n/g, "\n");
     result = result.replace(/\r/g,   "\n");
     result = result.replace(/^(\s*\S*(\s+\S+)*)\s*$/, '$1'); // Right trim by Igor Poteryaev.
+
     return result;
 }
 
@@ -401,6 +410,7 @@ var scrubWhiteSpace = function(result) {
     result = result.replace(/\s+$/g,   "");
     result = result.replace(/\s+/g,   " ");
     result = result.replace(/^(\s*\S*(\s+\S+)*)\s*$/, '$1'); // Right trim by Igor Poteryaev.
+
     return result;
 }
 
