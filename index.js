@@ -316,35 +316,13 @@ var emitStatement = function(stmtStr, state, funcText, tmplName, etc) {
 var emitSectionText = function(text, funcText) {
     if (text.length <= 0)
         return;
-    var nlPrefix = 0;               // Index to first non-newline in prefix.
-    var nlSuffix = text.length - 1; // Index to first non-space/tab in suffix.
-    while (nlPrefix < text.length && (text.charAt(nlPrefix) == '\n'))
-        nlPrefix++;
-    while (nlSuffix >= 0 && (text.charAt(nlSuffix) == ' ' || text.charAt(nlSuffix) == '\t'))
-        nlSuffix--;
-    if (nlSuffix < nlPrefix)
-        nlSuffix = nlPrefix;
-    if (nlPrefix > 0) {
-        funcText.push('if (_FLAGS.keepWhitespace == true) _OUT.write("');
-        var s = text.substring(0, nlPrefix).replace('\n', '\\n'); // A macro IE fix from BJessen.
-        if (s.charAt(s.length - 1) == '\n')
-            s = s.substring(0, s.length - 1);
-        funcText.push(s);
-        funcText.push('");');
-    }
-    var lines = text.substring(nlPrefix, nlSuffix + 1).split('\n');
+
+    var lines = text.split('\n');
+
     for (var i = 0; i < lines.length; i++) {
         emitSectionTextLine(lines[i], funcText);
         if (i < lines.length - 1)
             funcText.push('_OUT.write("\\n");\n');
-    }
-    if (nlSuffix + 1 < text.length) {
-        funcText.push('if (_FLAGS.keepWhitespace == true) _OUT.write("');
-        var s = text.substring(nlSuffix + 1).replace('\n', '\\n');
-        if (s.charAt(s.length - 1) == '\n')
-            s = s.substring(0, s.length - 1);
-        funcText.push(s);
-        funcText.push('");');
     }
 }
 
