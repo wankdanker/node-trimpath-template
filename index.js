@@ -41,7 +41,11 @@ var dirname = require('path').dirname;
 
 module.exports.filters = {};
 module.exports.collapseWhitespace = false;
-module.exports.collapseWhitespaceReg = /[\t\n\ ]{2,}(?![^<>]*<\/pre>)/gi;
+module.exports.collapseWhitespaceReg = [
+  //[ regexp, replaceWith ]
+  [ /[\t\n\ ]{2,}(?![^<>]*(<\/pre>|<\/textarea>))/gi, ' ' ]
+  , [ /^[\t\n\ ]{1,}</g, '<' ]
+];
 
 var compile = module.exports.compile = function (str, options) {
     if (options.filename) {
@@ -367,11 +371,17 @@ var emitText = function(text, funcText) {
     text = text.replace(/\\/g, '\\\\');
     text = text.replace(/\n/g, '\\n');
     text = text.replace(/"/g,  '\\"');
-    
+
     if (module.exports.collapseWhitespace) {
-        text = text.replace(module.exports.collapseWhitespaceReg, '');
+      module.exports.collapseWhitespaceReg.forEach(function (set) {
+        var reg = set[0]
+          , replace = set[1] || ''
+          ;
+
+        text = text.replace(reg, replace);
+      });
     }
-    
+
     funcText.push('_OUT.write("');
     funcText.push(text);
     funcText.push('");');
