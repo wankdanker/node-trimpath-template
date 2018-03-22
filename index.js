@@ -1,19 +1,19 @@
 /**
  * TrimPath Template.
  * Copyright (C) 2004, 2005 Metaha.
- * 
+ *
  * TrimPath Template is licensed under the GNU General Public License
  * and the Apache License, Version 2.0, as follows:
  *
- * This program is free software; you can redistribute it and/or 
+ * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
- * This program is distributed WITHOUT ANY WARRANTY; without even the 
- * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ *
+ * This program is distributed WITHOUT ANY WARRANTY; without even the
+ * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
@@ -21,9 +21,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -50,24 +50,24 @@ module.exports.collapseWhitespaceReg = [
 var compile = module.exports.compile = function (str, options) {
     options = options || {};
 
-        options.root = (options.filename)
-            ? dirname(options.filename)
-            : process.cwd();
+    options.root = (options.filename)
+        ? dirname(options.filename)
+        : process.cwd();
 
     var t = TrimPath.parseTemplate(str, options);
-    
+
     return function (context) {
         var deleteModifiers;
 
         context = context || {};
-        
+
         if (!context._MODIFIERS) {
             deleteModifiers = true;
         }
 
         //TODO: should they be merged if they both exist?
         context._MODIFIERS = context._MODIFIERS || module.exports.filters;
-        
+
         var result = t.process(context, { throwExceptions : true });
 
         if (deleteModifiers) {
@@ -103,7 +103,7 @@ TrimPath.processIncludes = function (tmplContent, options) {
 
             throw e;
         }
-        
+
         tmp = TrimPath.processIncludes(tmp, {
             root : join(options.root, dirname(path[1]))
         });
@@ -136,7 +136,7 @@ TrimPath.parseTemplate_etc.statementDef = { // Lookup table for statement tags.
     "else"   : { delta:  0, prefix: "} else {" },
     "elseif" : { delta:  0, prefix: "} else if (", suffix: ") {", paramDefault: "true" },
     "/if"    : { delta: -1, prefix: "}" },
-    "for"    : { delta:  1, paramMin: 3, 
+    "for"    : { delta:  1, paramMin: 3,
                     prefixFunc : function(stmtParts, state, tmplName, etc) {
                     if (stmtParts[2] != "in")
                         throw new etc.ParseError(tmplName, state.line, "bad for loop statement: " + stmtParts.join(' '));
@@ -145,10 +145,10 @@ TrimPath.parseTemplate_etc.statementDef = { // Lookup table for statement tags.
                     return [ "var ", listVar, " = ", stmtParts[3], ";",
                             // Fix from Ross Shaull for hash looping, make sure that we have an array of loop lengths to treat like a stack.
                             "var __LENGTH_STACK__;",
-                            "if (typeof(__LENGTH_STACK__) == 'undefined' || !__LENGTH_STACK__.length) __LENGTH_STACK__ = new Array();", 
+                            "if (typeof(__LENGTH_STACK__) == 'undefined' || !__LENGTH_STACK__.length) __LENGTH_STACK__ = new Array();",
                             "__LENGTH_STACK__[__LENGTH_STACK__.length] = 0;", // Push a new for-loop onto the stack of loop lengths.
                             "if ((", listVar, ") != null) { ",
-                            "var ", iterVar, "_ct = 0;",       // iterVar_ct variable, added by B. Bittman     
+                            "var ", iterVar, "_ct = 0;",       // iterVar_ct variable, added by B. Bittman
                             "for (var ", iterVar, "_index in ", listVar, ") { ",
                             iterVar, "_ct++;",
                             "if (typeof(", listVar, "[", iterVar, "_index]) == 'function') {continue;}", // IE 5.x fix from Igor Poteryaev.
@@ -158,13 +158,13 @@ TrimPath.parseTemplate_etc.statementDef = { // Lookup table for statement tags.
     "forelse" : { delta:  0, prefix: "} } if (__LENGTH_STACK__[__LENGTH_STACK__.length - 1] == 0) { if (", suffix: ") {", paramDefault: "true" },
     "/for"    : { delta: -1, prefix: "} }; delete __LENGTH_STACK__[__LENGTH_STACK__.length - 1];" }, // Remove the just-finished for-loop from the stack of loop lengths.
     "var"     : { delta:  0, prefix: "var ", suffix: ";" },
-    "macro"   : { delta:  1, 
+    "macro"   : { delta:  1,
                     prefixFunc : function(stmtParts, state, tmplName, etc) {
                         var macroName = stmtParts[1].split('(')[0];
-                        return [ "var ", macroName, " = function", 
+                        return [ "var ", macroName, " = function",
                                 stmtParts.slice(1).join(' ').substring(macroName.length),
                                 "{ var _OUT_arr = []; var _OUT = { write: function(m) { if (m) _OUT_arr.push(m); } }; " ].join('');
-                    } }, 
+                    } },
     "/macro"  : { delta: -1, prefix: " return _OUT_arr.join(''); };" }
 }
 TrimPath.parseTemplate_etc.modifierDef = {
@@ -203,7 +203,7 @@ TrimPath.parseTemplate_etc.Template = function(tmplName, tmplContent, funcSrc, f
         return resultArr.join("");
     }
     this.name       = tmplName;
-    this.source     = tmplContent; 
+    this.source     = tmplContent;
     this.sourceFunc = funcSrc;
     this.toString   = function() { return "TrimPath.Template [" + tmplName + "]"; }
 }
@@ -212,7 +212,7 @@ TrimPath.parseTemplate_etc.ParseError = function(name, line, message) {
     this.line    = line;
     this.message = message;
 }
-TrimPath.parseTemplate_etc.ParseError.prototype.toString = function() { 
+TrimPath.parseTemplate_etc.ParseError.prototype.toString = function() {
     return ("TrimPath template ParseError in " + this.name + ": line " + this.line + ", " + this.message);
 }
 
@@ -230,7 +230,7 @@ var parse = function(body, tmplName, etc) {
             var stmt = body.substring(begStmt, endStmt);
             var blockrx = stmt.match(/^\{(cdata|minify|eval)/); // From B. Bittman, minify/eval/cdata implementation.
             if (blockrx) {
-                var blockType = blockrx[1]; 
+                var blockType = blockrx[1];
                 var blockMarkerBeg = begStmt + blockType.length + 1;
                 var blockMarkerEnd = body.indexOf('}', blockMarkerBeg);
                 if (blockMarkerEnd >= 0) {
@@ -239,12 +239,12 @@ var parse = function(body, tmplName, etc) {
                         blockMarker = "{/" + blockType + "}";
                     } else {
                         blockMarker = body.substring(blockMarkerBeg + 1, blockMarkerEnd);
-                    }                        
-                    
+                    }
+
                     var blockEnd = body.indexOf(blockMarker, blockMarkerEnd + 1);
-                    if (blockEnd >= 0) {                            
+                    if (blockEnd >= 0) {
                         emitSectionText(body.substring(endStmtPrev + 1, begStmt), funcText);
-                        
+
                         var blockText = body.substring(blockMarkerEnd + 1, blockEnd);
                         if (blockType == 'cdata') {
                             emitText(blockText, funcText);
@@ -256,12 +256,12 @@ var parse = function(body, tmplName, etc) {
                         }
                         begStmt = endStmtPrev = blockEnd + blockMarker.length - 1;
                     }
-                }                        
+                }
             } else if (body.charAt(begStmt - 1) != '$' &&               // Not an expression or backslashed,
                         body.charAt(begStmt - 1) != '\\') {              // so check if it is a statement tag.
                 var offset = (body.charAt(begStmt + 1) == '/' ? 2 : 1); // Close tags offset of 2 skips '/'.
                                                                         // 10 is larger than maximum statement tag length.
-                if (body.substring(begStmt + offset, begStmt + 10 + offset).search(TrimPath.parseTemplate_etc.statementTag) == 0) 
+                if (body.substring(begStmt + offset, begStmt + 10 + offset).search(TrimPath.parseTemplate_etc.statementTag) == 0)
                     break;                                              // Found a match.
             }
             begStmt = body.indexOf("{", begStmt + 1);
@@ -293,7 +293,7 @@ var emitStatement = function(stmtStr, state, funcText, tmplName, etc) {
         if (state.stack.length <= 0)
             throw new etc.ParseError(tmplName, state.line, "close tag does not match any previous statement: " + stmtStr);
         state.stack.pop();
-    } 
+    }
     if (stmt.delta > 0)
         state.stack.push(stmtStr);
 
@@ -302,7 +302,7 @@ var emitStatement = function(stmtStr, state, funcText, tmplName, etc) {
         throw new etc.ParseError(tmplName, state.line, "statement needs more parameters: " + stmtStr);
     if (stmt.prefixFunc != null)
         funcText.push(stmt.prefixFunc(parts, state, tmplName, etc));
-    else 
+    else
         funcText.push(stmt.prefix);
     if (stmt.suffix != null) {
         if (parts.length <= 1) {
@@ -348,7 +348,7 @@ var emitSectionTextLine = function(line, funcText) {
         var endExpr = line.indexOf(endMark, begExpr + begMark.length);         // In "a${b}c", endExpr == 4;
         if (endExpr < 0)
             break;
-        emitText(line.substring(endExprPrev + endMarkPrev.length, begExpr), funcText);                
+        emitText(line.substring(endExprPrev + endMarkPrev.length, begExpr), funcText);
         // Example: exprs == 'firstName|default:"John Doe"|capitalize'.split('|')
         var exprArr = line.substring(begExpr + begMark.length, endExpr).replace(/\|\|/g, "#@@#").split('|');
         for (var k in exprArr) {
@@ -356,12 +356,12 @@ var emitSectionTextLine = function(line, funcText) {
                 exprArr[k] = exprArr[k].replace(/#@@#/g, '||');
         }
         funcText.push('_OUT.write(');
-        emitExpression(exprArr, exprArr.length - 1, funcText); 
+        emitExpression(exprArr, exprArr.length - 1, funcText);
         funcText.push(');');
         endExprPrev = endExpr;
         endMarkPrev = endMark;
     }
-    emitText(line.substring(endExprPrev + endMarkPrev.length), funcText); 
+    emitText(line.substring(endExprPrev + endMarkPrev.length), funcText);
 }
 
 var emitText = function(text, funcText) {
