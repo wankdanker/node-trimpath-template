@@ -4,7 +4,7 @@
   "description": "trimpath-template template language",
   "main": "index.js",
   "scripts": {
-    "test": "node test.js"
+    "test": "cd ./test; node test.js"
   },
   "repository": {
     "type": "git",

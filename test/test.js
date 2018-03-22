@@ -1,5 +1,5 @@
 var test = require('tape')
-	, tpl = require('./')
+	, tpl = require('../')
 	;
 
 test('test render call', function (t) {
