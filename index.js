@@ -194,8 +194,24 @@ TrimPath.parseTemplate_etc.Template = function(tmplName, tmplContent, funcSrc, f
         try {
             func(resultOut, context, flags);
         } catch (e) {
-            if (flags.throwExceptions == true)
+            if (flags.throwExceptions == true) {
+                //get line number
+                var lineNumber = e.stack.split(/\n/g)[1].split('<anonymous>')[2].split(/:/g)[1];
+                var start = Math.max(0, lineNumber - 5);
+                var stop = lineNumber + 5;
+
+                //get context from compiled function
+                var functionContext = func.toString().split(/\n/g).slice(start, stop);
+
+                //write a new error message that includes the context lines from the
+                // compiled function
+                e.stack = functionContext.reduce(function (str, line, ix) {
+                  return str + '\n ' + (ix + start + 1) + ':  ' + line;
+                }, e.message + ' on line ' + lineNumber + '\n-------------------------') + '\n-------------------------\n\n' + e.stack;
+
                 throw e;
+            }
+
             var result = resultArr.join("") + "[ERROR: " + e.toString() + (e.message ? '; ' + e.message : '') + "]";
             result["exception"] = e;
             return result;

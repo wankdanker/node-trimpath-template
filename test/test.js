@@ -36,3 +36,12 @@ test('test include files', function (t) {
 	t.equal(str1, 'before steve after');
 	t.end();
 });
+
+test('test error messages', function (t) {
+	var c = tpl.compile('multi\nline\ntemplate\nthis line will have errors: ${user.name}\nand\nthen there are more\nlines\nwithout errors');
+
+	var d = c({ name : 'steve' });
+
+	t.equal(d, 'steve');
+	t.end();
+});
