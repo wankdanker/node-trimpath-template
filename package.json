@@ -1,6 +1,6 @@
 {
   "name": "trimpath-template",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "trimpath-template template language",
   "main": "index.js",
   "scripts": {
