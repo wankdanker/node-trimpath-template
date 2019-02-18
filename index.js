@@ -35,7 +35,6 @@
 // TODO: Handle || (or) characters and backslashes.
 // TODO: Add more modifiers.
 
-var fs = require('fs');
 var join = require('path').join;
 var dirname = require('path').dirname;
 
@@ -94,6 +93,9 @@ TrimPath.processIncludes = function (tmplContent, options) {
 
     while (path = reg.exec(tmplContent)) {
         try {
+            //ugh; loading this here because in the browser this fails (with webpack)
+            var fs = require('fs');
+
             tmp = fs.readFileSync(join(options.root, path[1]), 'utf8');
         }
         catch (e) {
