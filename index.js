@@ -48,11 +48,13 @@ module.exports.collapseWhitespaceReg = [
 ];
 
 var compile = module.exports.compile = function (str, options) {
-    options = options || {};
-
-    options.root = (options.filename)
-        ? dirname(options.filename)
-        : process.cwd();
+    options = options || { root : "" };
+    
+    if (options.filename) {
+        options.root = (options.filename)
+            ? dirname(options.filename)
+            : process.cwd();
+    }
 
     var t = TrimPath.parseTemplate(str, options);
 
