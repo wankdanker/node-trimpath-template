@@ -1,0 +1,60 @@
+{{#macro displayText()}}
+    <div>
+        <h1>Blah Blah Blah...</h1>
+
+        {{#if false}}
+            <h1>This text won't be displayed.</h1>
+        {{else}}
+            <h1>This text will be displayed.</h1>
+        {{/if}}
+    </div>
+{{/macro}}
+
+
+{{#if hairColor == 'Brown'}}
+    <h1>Brown is a great hair color.</h1>
+{{elseif hairColor == 'Black'}}
+    <h1>Black is a natural hair color.</h1>
+{{elseif hairColor == 'Blonde'}}
+    <h1>Brown and Black are better than Blonde hair.</h1>
+{{else}}
+    <h1>Get a new Hair Color.</h1>
+{{/if}}
+
+<a href="#" style="display:block" class="class">
+    <i class='class' style='display:block'></i>
+    <div style='display:block' class='content'>Add address</div>
+</a>
+{{#for activity in likes}}
+    {{#if activity != 'Washing Dishes'}}
+        <div class="class">
+            <br>
+            <p>I enjoy {{activity}}</p>
+        </div>
+    {{else}}
+        <h1>I hate {{activity}}</h1>
+    {{/if}}
+{{forelse}}
+    <h1>Sorry there is no data about what you like.</h1>
+{{/for}}
+
+<h1>Heading</h1>
+<div class='class'>
+    <div class='class' id='id'>
+        {{displayText()}}
+    </div>
+</div>
+
+
+<!-- beautify ignore:start -->
+{{var num}}
+{{eval}}
+    num = 5;
+    num++;
+{{/eval}}
+<!-- beautify ignore:start -->
+
+<h1>My favorite number is {{num}}</h1>
+
+
+{{include ./test/test-include2.html}}

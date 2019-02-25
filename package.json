@@ -4,7 +4,7 @@
   "description": "trimpath-template template language",
   "main": "index.js",
   "scripts": {
-    "test": "cd ./test; node test.js"
+    "test": "node test/test.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,9 @@
   },
   "homepage": "https://github.com/wankdanker/node-trimpath-template",
   "devDependencies": {
-    "tape": "^3.0.3"
+    "tape": "^3.6.1"
+  },
+  "dependencies": {
+    "debug": "^4.1.1"
   }
 }
